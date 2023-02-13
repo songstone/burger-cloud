@@ -1,9 +1,11 @@
 package burgers.controller;
 
+import burgers.data.IngredientRepository;
 import burgers.domain.Burger;
 import burgers.domain.Ingredient;
 import burgers.domain.Ingredient.Type;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -24,20 +27,18 @@ import static burgers.domain.Ingredient.Type.*;
 @RequestMapping("/design")
 public class DesignBurgerController {
 
+    private final IngredientRepository ingredientRepo;
+
+    @Autowired
+    public DesignBurgerController(IngredientRepository ingredientRepo) {
+        this.ingredientRepo = ingredientRepo;
+    }
+
     @GetMapping
     public String showDesignForm(Model model) {
-        List<Ingredient> ingredients = Arrays.asList(
-            new Ingredient("PLBN" ,"Plain Bun", WRAP),
-            new Ingredient("BABN", "Bagel Bun", WRAP),
-            new Ingredient("GRBF", "Ground Beef", PROTEIN),
-            new Ingredient("BACO", "Bacon", PROTEIN),
-            new Ingredient("TMTO", "Tomato", VEGGIES),
-            new Ingredient("LETC", "Lettuce", VEGGIES),
-            new Ingredient("CHED", "Cheddar", CHEESE),
-            new Ingredient("MOZZ", "Mozzarella", CHEESE),
-            new Ingredient("SLSA", "Salsa", SAUCE),
-            new Ingredient("SRCR", "Sour Cream", SAUCE)
-        );
+
+        List<Ingredient> ingredients = new ArrayList<>();
+        ingredientRepo.findAll().forEach( i -> ingredients.add(i));
 
         for (Type type : Type.values()) {
             model.addAttribute(type.toString().toLowerCase(),
