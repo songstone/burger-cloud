@@ -7,6 +7,8 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class Order {
@@ -38,4 +40,10 @@ public class Order {
 
     @Digits(integer = 3, fraction = 0, message = "Invalid CCV")
     private String ccCVV;
+
+    private List<Burger> burgers = new ArrayList<>();
+
+    public void addDesign(Burger design) {
+        this.burgers.add(design);
+    }
 }
