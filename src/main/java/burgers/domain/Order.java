@@ -3,16 +3,23 @@ package burgers.domain;
 import lombok.Data;
 import org.hibernate.validator.constraints.CreditCardNumber;
 
+import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class Order {
+@Entity
+@Table(name = "BURGER_ORDER")
+public class Order implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private LocalDateTime placedAt;
 
@@ -41,9 +48,15 @@ public class Order {
     @Digits(integer = 3, fraction = 0, message = "Invalid CCV")
     private String ccCVV;
 
+    @ManyToMany(targetEntity = Burger.class)
     private List<Burger> burgers = new ArrayList<>();
 
     public void addDesign(Burger design) {
         this.burgers.add(design);
+    }
+
+    @PrePersist
+    void placedAt() {
+        this.placedAt = LocalDateTime.now();
     }
 }

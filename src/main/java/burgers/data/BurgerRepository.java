@@ -1,7 +1,7 @@
 package burgers.data;
 
 import burgers.domain.Burger;
+import org.springframework.data.repository.CrudRepository;
 
-public interface BurgerRepository {
-    Burger save(Burger burger);
+public interface BurgerRepository extends CrudRepository<Burger, Long> {
 }
