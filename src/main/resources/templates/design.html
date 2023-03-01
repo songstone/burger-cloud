@@ -7,9 +7,14 @@
 </head>
 <body>
     <h1>Design Your Burger</h1>
+    <h2>Feelin' hungry, <span th:text="${user.fullName}">Name</span>?</h2>
     <img th:src="@{/images/Burger.jpeg}">
 
-    <form method="post" th:object="${burger}">
+    <form method="post" th:action="@{/logout}" id="logoutForm">
+        <input type="submit" value="Logout"/>
+    </form>
+
+    <form method="post" th:object="${burger}" th:action="@{/design}" id="burgerForm">
         <span class="validationError"
             th:if="${#fields.hasErrors('ingredients')}"
             th:error="*{ingredients}">Ingredients Error</span>
