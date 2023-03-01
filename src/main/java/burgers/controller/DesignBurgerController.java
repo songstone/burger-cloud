@@ -2,10 +2,12 @@ package burgers.controller;
 
 import burgers.data.BurgerRepository;
 import burgers.data.IngredientRepository;
+import burgers.data.UserRepository;
 import burgers.domain.Burger;
 import burgers.domain.Ingredient;
 import burgers.domain.Ingredient.Type;
 import burgers.domain.Order;
+import burgers.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,14 +31,17 @@ public class DesignBurgerController {
 
     private final BurgerRepository burgerRepo;
 
+    private final UserRepository userRepo;
+
     @Autowired
-    public DesignBurgerController(IngredientRepository ingredientRepo, BurgerRepository burgerRepo) {
+    public DesignBurgerController(IngredientRepository ingredientRepo, BurgerRepository burgerRepo, UserRepository userRepo) {
         this.ingredientRepo = ingredientRepo;
         this.burgerRepo = burgerRepo;
+        this.userRepo = userRepo;
     }
 
     @GetMapping
-    public String showDesignForm(Model model) {
+    public String showDesignForm(Model model, Principal principal) {
 
         List<Ingredient> ingredients = new ArrayList<>();
         ingredientRepo.findAll().forEach(i -> ingredients.add(i));
@@ -45,7 +51,9 @@ public class DesignBurgerController {
                     filterByType(ingredients, type));
         }
 
-        model.addAttribute("burger", new Burger());
+        String username = principal.getName();
+        User user = userRepo.findByUsername(username);
+        model.addAttribute("user", user);
 
         return "design";
     }
